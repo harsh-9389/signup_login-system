@@ -1,0 +1,16 @@
+.container{
+    text-align: center;
+    padding-top: 20%;
+    /* margin: auto; */
+}
+
+.container button{
+    padding : 8px;
+    margin: 8px;
+    cursor: pointer;
+    float: left;
+}
+
+.register{
+    margin-left: 37%;
+}
