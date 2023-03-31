@@ -1,13 +1,12 @@
-// require('dotenv').config(); 
+require('dotenv').config(); 
 const express = require('express'); 
 const path = require("path")
 const ejs = require("ejs");
 const session = require('express-session'); 
 const passport = require("passport"); 
-const md5 = require('md5'); 
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt'); 
-const flash =  require('connect-flash'); 
+const flash =  require('express-flash'); 
 // const passportLocalMongoose = require("passport-local-mongoose");
 const app =express();
 
@@ -44,7 +43,7 @@ app.use(passport.session());
 
 const collection = require("./mongodb")    //MongoDB File 
 
-//Routs Connection 
+//routes connection 
 app.get("/", (req,res)=>{
     res.render("home")
 })
@@ -65,9 +64,8 @@ app.post("/signup", async(req, res)=>{
 
     ////checking Email is not duplicate
     if(check){
-        res.send('Email allready exists.')
-    //     req.flash('error', 'Email Allready in Use.')
-    //     res.redirect('/signup')
+        req.flash('error', 'Email Allready in Use....')
+        res.redirect('/signup')
     }
 
     ////// Checking Password meets requirments 
@@ -76,34 +74,35 @@ app.post("/signup", async(req, res)=>{
     const number = /[0-9]/;
     const special = /['@', '#', '$', '&', '!', '%', '^']/;
 
-    if(password.length < 8 || !lower.test(password) || !number.test(password) || !upper.test(password) || !special.test(password)) {
-        if(password.length<8){
-            res.send("Please make sure password is longer than 8 characters.")
-        }
-        if(!lower.test(password)){
-            res.send("Please make sure password includes a lowercase letter.")
-        }
-        if(!number.test(password)){
-            res.send("Please make sure Password Includes a Digit")     
-        }
-        if(!upper.test(password)) {
-            res.send("Please make sure password includes an uppercase letter.");
-        }
-        if(!special.test(password)){
-            res.send('Please make sure password contains a special character');
-        }
+    if(password.length < 8){
+        req.flash('error', 'Please make sure password is longer than 8 characters.')
+        res.redirect('/signup')
+    }
+    if(!lower.test(password)){
+        req.flash('error', 'Please make sure password includes a lowercase letter.')
+        res.redirect('/signup')
+    }
+    if(!number.test(password)){
+        req.flash('error', 'Please make sure Password Includes a Digit') 
+        res.redirect('/signup')    
+    }
+    if(!upper.test(password)) {
+        req.flash('error', 'Please make sure password includes an uppercase letter.');
+        res.redirect('/signup')
+    }
+    if(!special.test(password)){
+        req.flash('error', 'Please make sure password contains a special character');
+        res.redirect('/signup')
     }
 
     //// Confirm Password checkin
     if(password === confirm_password){
         const hashedPassword = await bcrypt.hash(password, 10)
-        // const hashConf_password = bcrypt.hash(confirm_password, 10)
     
         const data= new collection({
             name:name, 
             email:email,
             password:hashedPassword,
-            // confirm_password: hashConf_password
         });
         
         data.save(function(err){
@@ -111,22 +110,22 @@ app.post("/signup", async(req, res)=>{
                 console.log(err); 
             }
             else{
-                res.send('you have been resistered successfully');
+                req.flash('success', 'you have been resistered successfully now you can login.');
+                res.redirect('/'); 
             }
         });
     }
 
     else{
-        res.send('Both the passwords should be same.....')
-        // req.flash('error', 'Both the passwords should be same')
-        // res.redirect('/signup')
+        req.flash('error', 'Both the passwords should be same')
+        res.redirect('/signup')
     }
 });
 /////////////////////////
 
 ///// Login Post Request
 app.post("/login", async(req, res)=>{
-   
+
     const {email, password} = req.body 
     const check= await collection.findOne({email:email})
     
@@ -138,12 +137,14 @@ app.post("/login", async(req, res)=>{
             res.redirect('/'); 
         }
         else{
-            res.send('wrong details')
+            req.flash('error', 'wrong details')
+            res.redirect('/login'); 
         }
     }
 
     catch{
-        res.send("Email Adress is Wrong.")
+        req.flash('error', 'Acount with this email does not exists.')
+        res.redirect('/login')
     }
 });
 //////////////////////////////

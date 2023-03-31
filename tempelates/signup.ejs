@@ -18,6 +18,11 @@
             <form action="/signup" method="post" data-request-flash>
                 <h2>Sign Up</h2>
                 <p>Please fill in this form to create an account!</p>
+
+                <% if(messages.error){ %>
+                <span style="color: rgb(13, 144, 122)"> <%= messages.error %> </span>
+                <% } %>
+
                 <hr>
                 <div class="form-group">
                     <div class="input-group">

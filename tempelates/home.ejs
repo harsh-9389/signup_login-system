@@ -8,12 +8,15 @@
     <link rel="stylesheet" href="home.css">
 </head>
 <body>
+    <% if(messages.success){ %>
+        <span style="color: rgb(8, 118, 118);"> <%= messages.success %> </span>
+    <% } %>
     <section class="container" >
         <div class="register">
-            <button type="submit" onclick="window.location.href = '/signup';">Join The Community</button>
+            <button class="common" type="submit" onclick="window.location.href = '/signup';">Join The Community</button>
         </div>
         <div class="login">
-            <button type="submit" onclick="window.location.href = '/login';">Allready a User</button>
+            <button class="common" type="submit" onclick="window.location.href = '/login';">Allready a User</button>
         </div>
     </section>
 </body>

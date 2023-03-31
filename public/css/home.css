@@ -12,5 +12,19 @@
 }
 
 .register{
-    margin-left: 37%;
+    margin-left: 35%;
+}
+
+.common{
+    background-color: rgb(60, 205, 198);
+    border: rgb(19, 159, 152) solid .25rem;
+    border-radius: 5rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: .8rem;
+    color: black;
+}
+
+.common:hover{
+    transform: scale(1.1);
+    background-color:  rgb(19, 159, 152);
 }
