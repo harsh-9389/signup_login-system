@@ -62,41 +62,53 @@ app.post("/signup", async(req, res)=>{
     const {name, email, password, confirm_password} = req.body
     const check = await collection.findOne({email: email})
 
-    ////checking Email is not duplicate
-    if(check){
-        req.flash('error', 'Email Allready in Use....')
-        res.redirect('/signup')
-    }
-
-    ////// Checking Password meets requirments 
     const lower = /[a-z]/;
     const upper  =/[A-Z]/;
     const number = /[0-9]/;
     const special = /['@', '#', '$', '&', '!', '%', '^']/;
+    ////checking Email is not duplicate
+    if(check){
+        req.flash('error', 'Email Allready in Use....')
+        req.flash('name', name)
+        req.flash('email', email)
+        res.redirect('/signup')
+    }
 
-    if(password.length < 8){
+    ////// Checking Password meets requirments 
+
+    else if(password.length < 8){
         req.flash('error', 'Please make sure password is longer than 8 characters.')
+        req.flash('name', name)
+        req.flash('email', email)
         res.redirect('/signup')
     }
-    if(!lower.test(password)){
+    else if(!lower.test(password)){
         req.flash('error', 'Please make sure password includes a lowercase letter.')
+        req.flash('name', name)
+        req.flash('email', email)
         res.redirect('/signup')
     }
-    if(!number.test(password)){
+    else if(!upper.test(password)) {
+        req.flash('error', 'Please make sure password includes an uppercase letter.');
+        req.flash('name', name)
+        req.flash('email', email)
+        res.redirect('/signup')
+    }
+    else if(!number.test(password)){
         req.flash('error', 'Please make sure Password Includes a Digit') 
+        req.flash('name', name)
+        req.flash('email', email)
         res.redirect('/signup')    
     }
-    if(!upper.test(password)) {
-        req.flash('error', 'Please make sure password includes an uppercase letter.');
-        res.redirect('/signup')
-    }
-    if(!special.test(password)){
+    else if(!special.test(password)){
         req.flash('error', 'Please make sure password contains a special character');
+        req.flash('name', name)
+        req.flash('email', email)
         res.redirect('/signup')
     }
 
     //// Confirm Password checkin
-    if(password === confirm_password){
+    else if(password === confirm_password){
         const hashedPassword = await bcrypt.hash(password, 10)
     
         const data= new collection({
@@ -118,6 +130,8 @@ app.post("/signup", async(req, res)=>{
 
     else{
         req.flash('error', 'Both the passwords should be same')
+        req.flash('name', name)
+        req.flash('email', email)
         res.redirect('/signup')
     }
 });
@@ -138,12 +152,14 @@ app.post("/login", async(req, res)=>{
         }
         else{
             req.flash('error', 'wrong details')
+            req.flash('email', email)
             res.redirect('/login'); 
         }
     }
 
     catch{
         req.flash('error', 'Acount with this email does not exists.')
+        req.flash('email', email)
         res.redirect('/login')
     }
 });
