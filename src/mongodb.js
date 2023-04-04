@@ -1,12 +1,7 @@
 const mongoose = require("mongoose")
-// const session = require('express-session'); 
-// const passport = require("passport"); 
-// const passportLocalMongoose = require("passport-local-mongoose"); 
-
-
-//// Setting Up the MongoDB Connection 
 mongoose.set('strictQuery', true);
 
+//// Mongoose Connection////////
 mongoose.connect("mongodb://127.0.0.1:27017/hack_36")
 .then(()=>{
     console.log("mongodb connected"); 
@@ -25,14 +20,4 @@ const userSchema = mongoose.Schema({
 ///////////////////////
 
 const collection = new mongoose.model("users", userSchema);   
-
-// secret ='Thisisoulittlesecret.'
-// userSchema.plugin(passportLocalMongoose) ;
-// userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]}); 
-// userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ["password"]}); 
-
-// passport.use(collection.createStrategy()); 
-// passport.serializeUser(collection.serializeUser()); 
-// passport.deserializeUser(collection.deserializeUser()); 
-
 module.exports = collection

@@ -7,7 +7,6 @@ const passport = require("passport");
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt'); 
 const flash =  require('express-flash'); 
-// const passportLocalMongoose = require("passport-local-mongoose");
 const app =express();
 
 //Setting Up the template engine 
@@ -66,6 +65,7 @@ app.post("/signup", async(req, res)=>{
     const upper  =/[A-Z]/;
     const number = /[0-9]/;
     const special = /['@', '#', '$', '&', '!', '%', '^']/;
+    
     ////checking Email is not duplicate
     if(check){
         req.flash('error', 'Email Allready in Use....')
